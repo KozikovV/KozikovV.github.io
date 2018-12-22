@@ -1,0 +1,21 @@
+{
+  "name": "first_sass",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kozikov",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.26.3",
+    "gulp": "github:gulpjs/gulp#v4.0.0-alpha.3",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-watch": "^5.0.1",
+    "gulp-watch-sass": "^1.4.1",
+    "node-sass": "^4.10.0"
+  }
+}

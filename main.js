@@ -76,7 +76,7 @@ input.addEventListener('keyup', function(e) {
             }, 2000);
 
         } else {
-            result.innerHTML = `Looser. Your number was ${input.value} and the right number was ${b}`;
+            result.innerHTML = `Looser. Your number was ${input.value} and the right random number was ${b}`;
             result.setAttribute('style', 'background-color: red; color: yellow');
             setTimeout(function(){
                 result.innerHTML = '';

@@ -12,9 +12,12 @@
    ========================================================================== */
 
 html {
-  color: #222;
+  color: #ffffff;
   font-size: 1em;
   line-height: 1.4;
+}
+* {
+  color: #ffffff;
 }
 
 /*
@@ -259,5 +262,9 @@ textarea {
   h3 {
     page-break-after: avoid;
   }
+}
+
+canvas {
+  width: 100%;
 }
 

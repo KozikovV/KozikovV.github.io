@@ -3,39 +3,121 @@
 
 <head>
   <meta charset="utf-8">
-  <title></title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <meta property="og:title" content="">
-  <meta property="og:type" content="">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="">
-
-  <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png">
-  <!-- Place favicon.ico in the root directory -->
+  <title>WishList</title>
 
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
 
-  <meta name="theme-color" content="#fafafa">
 </head>
 
 <body>
 
   <!-- Add your site or application content here -->
-  <p>Hello world! This is HTML5 Boilerplate.</p>
+  <div class="content">
+    <h1>WISH LIST</h1>
+    <ol>
+      <li>
+        Велосумка <a href="https://www.blackpack.com.ua/product/its-a-good-bag-2-0/?lang=uk">It's a good bag</a>
+      </li>
+      <li>
+        Гумові петлі для тренування <a href="https://rozetka.com.ua/256246326/p256246326/">EasyFit</a>
+      </li>
+      <li>
+        Зовнішній жорсткий диск <a href="https://comfy.ua/ua/ssd-nakopitel-vneshnij-transcend-esd240c-240gb-ts240gesd240c.html?gclid=CjwKCAjwmqKJBhAWEiwAMvGt6EeRmpb6xiPEiQH6WMb2bS1aXVC8FHaI6HsuWeFnsofNxK82zTyTCBoCpisQAvD_BwE">Як приклад</a>
+      </li>
+      <li>
+        Якісь конструктори радіомоделювання
+        <ul>
+          <li><a href="https://sxema.com.ua/ua/p1288691521-nabor-dlya-sborki.html">Bluetooth speaker</a></li>
+          <li><a href="https://sxema.com.ua/ua/p1217811505-radiokonstruktor-laboratornyj-blok.html">Лабораторний блок живлення 1</a></li>
+          <li><a href="https://sxema.com.ua/ua/p1156760644-radiokonstruktor-laboratornyj-blok.html">Лабораторний блок живлення 2</a></li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <script src="https://pixijs.download/release/pixi.js"></script>
+  <script>
+    const app = new PIXI.Application();
+    document.body.appendChild(app.view);
+
+    // Get the texture for rope.
+    const starTexture = PIXI.Texture.from('img/star.png');
+
+    const starAmount = 1000;
+    let cameraZ = 0;
+    const fov = 20;
+    const baseSpeed = 0.06;
+    let speed = 0;
+    let warpSpeed = 0;
+    const starStretch = 5;
+    const starBaseSize = 0.05;
+
+
+    // Create the stars
+    const stars = [];
+    for (let i = 0; i < starAmount; i++) {
+      const star = {
+        sprite: new PIXI.Sprite(starTexture),
+        z: 0,
+        x: 0,
+        y: 0,
+      };
+      star.sprite.anchor.x = 0.5;
+      star.sprite.anchor.y = 0.7;
+      randomizeStar(star, true);
+      app.stage.addChild(star.sprite);
+      stars.push(star);
+    }
+
+    function randomizeStar(star, initial) {
+      star.z = initial ? Math.random() * 2000 : cameraZ + Math.random() * 1000 + 2000;
+
+      // Calculate star positions with radial random coordinate so no star hits the camera.
+      const deg = Math.random() * Math.PI * 2;
+      const distance = Math.random() * 50 + 1;
+      star.x = Math.cos(deg) * distance;
+      star.y = Math.sin(deg) * distance;
+    }
+
+    // Change flight speed every 5 seconds
+    // setInterval(() => {
+    //   warpSpeed = warpSpeed > 0 ? 0 : 1;
+    // }, 5000);
+
+    // Listen for animate update
+    app.ticker.add((delta) => {
+      // Simple easing. This should be changed to proper easing function when used for real.
+      speed += (warpSpeed - speed) / 20;
+      cameraZ += delta * 10 * (speed + baseSpeed);
+      for (let i = 0; i < starAmount; i++) {
+        const star = stars[i];
+        if (star.z < cameraZ) randomizeStar(star);
+
+        // Map star 3d position to 2d with really simple projection
+        const z = star.z - cameraZ;
+        star.sprite.x = star.x * (fov / z) * app.renderer.screen.width + app.renderer.screen.width / 2;
+        star.sprite.y = star.y * (fov / z) * app.renderer.screen.width + app.renderer.screen.height / 2;
+
+        // Calculate star scale & rotation.
+        const dxCenter = star.sprite.x - app.renderer.screen.width / 2;
+        const dyCenter = star.sprite.y - app.renderer.screen.height / 2;
+        const distanceCenter = Math.sqrt(dxCenter * dxCenter + dyCenter * dyCenter);
+        const distanceScale = Math.max(0, (2000 - z) / 2000);
+        star.sprite.scale.x = distanceScale * starBaseSize;
+        // Star is looking towards center so that y axis is towards center.
+        // Scale the star depending on how fast we are moving, what the stretchfactor is and depending on how far away it is from the center.
+        star.sprite.scale.y = distanceScale * starBaseSize + distanceScale * speed * starStretch * distanceCenter / app.renderer.screen.width;
+        star.sprite.rotation = Math.atan2(dyCenter, dxCenter) + Math.PI / 2;
+      }
+    });
+  </script>
   <script src="js/vendor/modernizr-3.11.2.min.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/main.js"></script>
 
-  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
-  <script>
-    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
-    ga('create', 'UA-XXXXX-Y', 'auto'); ga('set', 'anonymizeIp', true); ga('set', 'transport', 'beacon'); ga('send', 'pageview')
-  </script>
-  <script src="https://www.google-analytics.com/analytics.js" async></script>
+
 </body>
 
 </html>
